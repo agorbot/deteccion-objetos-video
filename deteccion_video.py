@@ -51,8 +51,8 @@ if __name__ == "__main__":
     parser.add_argument("--checkpoint_model", type=str, help="path to checkpoint model")
     opt = parser.parse_args()
     print(opt)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available else "cpu")
+    print("**** cuda ****" if torch.cuda.is_available else "cpu")
     model = Darknet(opt.model_def, img_size=opt.img_size).to(device)
 
 
@@ -100,7 +100,7 @@ if __name__ == "__main__":
                     box_w = x2 - x1
                     box_h = y2 - y1
                     color = [int(c) for c in colors[int(cls_pred)]]
-                    print("Se detectó {} en X1: {}, Y1: {}, X2: {}, Y2: {}".format(classes[int(cls_pred)], x1, y1, x2, y2))
+                    #print("Se detectó {} en X1: {}, Y1: {}, X2: {}, Y2: {}".format(classes[int(cls_pred)], x1, y1, x2, y2))
                     frame = cv2.rectangle(frame, (x1, y1 + box_h), (x2, y1), color, 5)
                     cv2.putText(frame, classes[int(cls_pred)], (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 5)# Nombre de la clase detectada
                     cv2.putText(frame, str("%.2f" % float(conf)), (x2, y2 - box_h), cv2.FONT_HERSHEY_SIMPLEX, 0.5,color, 5) # Certeza de prediccion de la clase
@@ -111,12 +111,13 @@ if __name__ == "__main__":
             cv2.imshow('frame', Convertir_BGR(RGBimg))
             out.write(RGBimg)
         else:
+
             out.write(Convertir_BGR(RGBimg))
-            cv2.imshow('frame', RGBimg)
+            #cv2.imshow('frame', RGBimg)
         #cv2.waitKey(0)
 
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
-    out.release()
+    #out.release()
     cap.release()
     cv2.destroyAllWindows()

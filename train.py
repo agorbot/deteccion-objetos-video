@@ -41,7 +41,9 @@ if __name__ == "__main__":
 
     logger = Logger("logs")
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    device = torch.device("cuda" if torch.cuda.is_available else "cpu")
+    print("**** cuda ****" if torch.cuda.is_available else "cpu")
 
     os.makedirs("output", exist_ok=True)
     os.makedirs("checkpoints", exist_ok=True)
