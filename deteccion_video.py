@@ -66,8 +66,9 @@ if __name__ == "__main__":
     Tensor = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
     if opt.webcam==1:
         os.makedirs("output", exist_ok=True)
-        nameOutput = datetime.now().strftime("%d/%m/%Y-%H:%M:%S")+'.mp4'
+        nameOutput = datetime.now().strftime("%d_%m_%Y-%H_%M_%S")+'.mp4'
         path='./output/'+nameOutput
+        print('path:',path)
         cap = cv2.VideoCapture(0)
         out = cv2.VideoWriter(path,cv2.VideoWriter_fourcc('M','J','P','G'), 10, (1280,960))
     else:
@@ -75,8 +76,9 @@ if __name__ == "__main__":
         # frame_width = int(cap.get(3))
         # frame_height = int(cap.get(4))
         os.makedirs("output", exist_ok=True)
-        nameOutput = datetime.now().strftime("%d/%m/%Y-%H:%M:%S")+opt.directorio_video
+        nameOutput = 'output_'+opt.directorio_video
         path='./output/'+nameOutput
+        print('path:',path)
         out = cv2.VideoWriter(path,cv2.VideoWriter_fourcc('M','J','P','G'), 10, (1280,960))
     colors = np.random.randint(0, 255, size=(len(classes), 3), dtype="uint8")
     a=[]
