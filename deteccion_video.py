@@ -9,7 +9,7 @@ import cv2
 from PIL import Image
 import torch
 from torch.autograd import Variable
-
+from datetime import datetime
 
 
 def Convertir_RGB(img):
@@ -65,13 +65,19 @@ if __name__ == "__main__":
     classes = load_classes(opt.class_path)
     Tensor = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
     if opt.webcam==1:
+        os.makedirs("output", exist_ok=True)
+        nameOutput = datetime.now().strftime("%d/%m/%Y-%H:%M:%S")+'.mp4'
+        path='./output/'+nameOutput
         cap = cv2.VideoCapture(0)
-        out = cv2.VideoWriter('output.mp4',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (1280,960))
+        out = cv2.VideoWriter(path,cv2.VideoWriter_fourcc('M','J','P','G'), 10, (1280,960))
     else:
         cap = cv2.VideoCapture(opt.directorio_video)
         # frame_width = int(cap.get(3))
         # frame_height = int(cap.get(4))
-        out = cv2.VideoWriter('outp.mp4',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (1280,960))
+        os.makedirs("output", exist_ok=True)
+        nameOutput = datetime.now().strftime("%d/%m/%Y-%H:%M:%S")+opt.directorio_video
+        path='./output/'+nameOutput
+        out = cv2.VideoWriter(path,cv2.VideoWriter_fourcc('M','J','P','G'), 10, (1280,960))
     colors = np.random.randint(0, 255, size=(len(classes), 3), dtype="uint8")
     a=[]
     while cap:
