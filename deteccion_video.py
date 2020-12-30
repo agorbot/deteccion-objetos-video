@@ -82,6 +82,9 @@ if __name__ == "__main__":
         out = cv2.VideoWriter(path,cv2.VideoWriter_fourcc('M','J','P','G'), 10, (1280,960))
     colors = np.random.randint(0, 255, size=(len(classes), 3), dtype="uint8")
     a=[]
+    f = open("coordenadas.txt", "w")
+    f.writelines('Objeto;X1;Y1;X2;Y2;CenterX;CenterY\n')
+    line=''
     while cap:
         ret, frame = cap.read()
         if ret is False:
@@ -100,7 +103,7 @@ if __name__ == "__main__":
             detections = model(imgTensor)
             detections = non_max_suppression(detections, opt.conf_thres, opt.nms_thres)
 
-
+        
         for detection in detections:
             if detection is not None:
                 detection = rescale_boxes(detection, opt.img_size, RGBimg.shape[:2])
@@ -108,9 +111,11 @@ if __name__ == "__main__":
                     box_w = x2 - x1
                     box_h = y2 - y1
                     color = [int(c) for c in colors[int(cls_pred)]]
-                    centerY = Y2-Y1 
-                    centerX = X2-X1
-                    print("Se detectó {} en X1: {}, Y1: {}, X2: {}, Y2: {}, centerX:{}, centerY:{}".format(classes[int(cls_pred)], x1, y1, x2, y2, centerX, centerY))
+                    centerY = y1 + box_h/2 
+                    centerX = x1 + box_w/2
+                    line = line +str(classes[int(cls_pred)]) + ';' + str(round(float(x1),2)) + ';' + str(round(float(y1),2)) + ';' + str(round(float(x2),2)) + ';' + str(round(float(y2),2)) + ';' + str(round(float(centerX),2)) +';'+ str(round(float(centerY),2)) +'\n'
+                    
+                    print("Se detectó {} en X1: {}, Y1: {}, X2: {}, Y2: {}, centerX:{}, centerY:{}".format(classes[int(cls_pred)], round(float(x1),2), round(float(y1),2), round(float(x2),2), round(float(y2),2), round(float(centerX),2),round(float(centerY),2) ))
                     frame = cv2.rectangle(frame, (x1, y1 + box_h), (x2, y1), color, 5)
                     cv2.putText(frame, classes[int(cls_pred)], (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 5)# Nombre de la clase detectada
                     cv2.putText(frame, str("%.2f" % float(conf)), (x2, y2 - box_h), cv2.FONT_HERSHEY_SIMPLEX, 0.5,color, 5) # Certeza de prediccion de la clase
@@ -128,6 +133,8 @@ if __name__ == "__main__":
 
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
+    f.writelines(line)
+    f.close()
     #out.release()
     cap.release()
     cv2.destroyAllWindows()
